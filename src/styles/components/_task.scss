@@ -1,0 +1,22 @@
+@import "../variables";
+
+.task {
+    padding: 12px;
+    border-radius: $border-radius-base;
+}
+
+.task-processing {
+    background: lighten($brand-info, 25%);
+}
+
+.task-done {
+    background: lighten($brand-success, 25%);
+}
+
+.task-error {
+    background: lighten($brand-danger, 25%);
+}
+
+.task-canceled {
+    background: lighten($gray-light, 25%);
+}

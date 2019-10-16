@@ -1,0 +1,9 @@
+@import "mixins/index";
+@import "modules/index";
+
+@import "components/index";
+@import "containers/index";
+
+.App {
+    padding: 10px;
+}

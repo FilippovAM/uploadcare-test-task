@@ -1,0 +1,20 @@
+@import "../variables";
+
+.tasks {
+    margin-bottom: 12px;
+
+    & .tasks__item {
+        max-width: 300px;
+        margin-top: 12px;
+        padding: 10px;
+        box-shadow: 0 0 3px #aaa;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+}
+
+.tasks__item .btn {
+    margin-top: 12px;
+}
