@@ -3,12 +3,12 @@ import {action, observable} from 'mobx';
 import api, {AxiosResponse} from '../api/api';
 import {Status} from '../constants/enums';
 
-const TIMEOUT_FOR_GET_PROGRESS_TASK = 10000; // ms
+const TIMEOUT_FOR_GET_PROGRESS_TASK = 3000; // ms
 
 export interface TaskProps {
     id: string;
     status: Status;
-    progress: number;
+    progress: number | string;
     isUpdating?: boolean;
 }
 
@@ -48,7 +48,7 @@ class TasksStore {
     cancelTask = (id: string) => {
         this.updateTask(id, {isUpdating: true});
 
-        api.post(`${this.endpoint}/cancel?id=${id}`)
+        api.delete(`${this.endpoint}/cancel?id=${id}`)
             .then((res: AxiosResponse<UpdateTaskResponse>) => {
                 const {status, progress} = res.data;
                 this.updateTask(id, {status, progress});
@@ -82,14 +82,12 @@ class TasksStore {
     subscribe = (id: string) => { // subscribe to progress task
         api.get(`${this.endpoint}/get?id=${id}`)
             .then((res: AxiosResponse<UpdateTaskResponse>) => {
-                const hasTask = !!this.getTask(id);
-                if (!hasTask) return;
-
                 const {status, progress} = res.data;
+                if (status === Status.CANCELED) return;
+
                 this.updateTask(id, {status, progress});
 
-                const isProcessingTask = status === Status.PROCESSING;
-                if (isProcessingTask) { // active progress
+                if (status === Status.PROCESSING) {
                     setTimeout(() => this.subscribe(id), TIMEOUT_FOR_GET_PROGRESS_TASK);
                 }
             });
