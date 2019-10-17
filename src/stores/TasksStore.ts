@@ -80,6 +80,9 @@ class TasksStore {
                 const {status, progress} = res.data;
                 if (status === Status.CANCELED) return;
 
+                const task = this.getTask(id);
+                if (task && task.isUpdating) return;
+
                 this.updateTask(id, {status, progress});
 
                 if (status === Status.PROCESSING) {
