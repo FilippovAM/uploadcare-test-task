@@ -65,11 +65,6 @@ class TasksStore {
     };
 
     @action
-    removeTask = (id: string) => {
-        this.tasks = this.tasks.filter(task => task.id !== id);
-    };
-
-    @action
     updateTask = (id: string, params: UpdateTaskResponse) => {
         const task = this.getTask(id);
         if (task) {
