@@ -87,7 +87,7 @@ class TasksStore {
                 if (status === Status.CANCELED) return;
 
                 const task = this.getTask(id);
-                if (task && (task.isUpdating || task.isSubscribed)) return;
+                if (task && (task.isUpdating || !task.isSubscribed)) return;
 
                 this.updateTask(id, {status, progress});
 
