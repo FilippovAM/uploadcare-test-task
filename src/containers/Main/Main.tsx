@@ -13,6 +13,8 @@ interface InjectedProps {
         isLoading: boolean;
         createTask: () => void;
         cancelTask: (id: string) => void;
+        subscribe: (id: string) => void;
+        cancelSubscribe: (id: string) => void;
     };
 }
 
@@ -35,6 +37,18 @@ export default class Main extends React.Component {
         }
     };
 
+    onClickCancelSubscribe = (id: string) => {
+        return () => {
+            this.injectedProps.tasksStore.cancelSubscribe(id);
+        }
+    };
+
+    onClickContinueSubscribe = (id: string) => {
+        return () => {
+            this.injectedProps.tasksStore.subscribe(id);
+        }
+    };
+
     render() {
         const {tasks, isLoading} = this.injectedProps.tasksStore;
         const hasTasks = !!tasks.length;
@@ -44,7 +58,7 @@ export default class Main extends React.Component {
                 {hasTasks ? (
                     <div className="tasks">
                         {tasks.map((task: TaskProps) => {
-                            const {isUpdating, status} = task;
+                            const {isUpdating, isSubscribed, status} = task;
                             const isProcessing = status === Status.PROCESSING;
                             const progress = isDef(task.progress) ? +task.progress * 100 : task.progress; // convert to percent
 
@@ -57,9 +71,25 @@ export default class Main extends React.Component {
                                     />
 
                                     {isProcessing && (
-                                        <Button type={ButtonType.DANGER}
-                                                loading={isUpdating}
-                                                onClick={this.onClickCancelTask(task.id)}>Отменить</Button>
+                                        <>
+                                            <Button type={ButtonType.DANGER}
+                                                    loading={isUpdating}
+                                                    onClick={this.onClickCancelTask(task.id)}>Отменить</Button>
+
+                                            {isSubscribed ? (
+                                                <Button type={ButtonType.WARNING}
+                                                        loading={isUpdating}
+                                                        onClick={this.onClickCancelSubscribe(task.id)}>
+                                                    Отменить подписку
+                                                </Button>
+                                            ) : (
+                                                <Button type={ButtonType.PRIMARY}
+                                                        loading={isUpdating}
+                                                        onClick={this.onClickContinueSubscribe(task.id)}>
+                                                    Продолжить подписку
+                                                </Button>
+                                            )}
+                                        </>
                                     )}
                                 </div>
                             )

@@ -10,6 +10,7 @@ export interface TaskProps {
     status: Status;
     progress: number | string;
     isUpdating?: boolean;
+    isSubscribed?: boolean;
 }
 
 interface CreateTaskResponse {
@@ -20,10 +21,13 @@ interface UpdateTaskResponse {
     status?: Status;
     progress?: number;
     isUpdating?: boolean;
+    isSubscribed?: boolean;
 }
 
 class TasksStore {
     endpoint: string;
+
+    subscribeIdsMap = new Map();
 
     constructor(endpoint: string) {
         this.endpoint = endpoint;
@@ -75,6 +79,8 @@ class TasksStore {
     };
 
     subscribe = (id: string) => { // subscribe to progress task
+        this.updateTask(id, {isSubscribed: true});
+
         api.get(`${this.endpoint}/get?id=${id}`)
             .then((res: AxiosResponse<UpdateTaskResponse>) => {
                 const {status, progress} = res.data;
@@ -86,9 +92,16 @@ class TasksStore {
                 this.updateTask(id, {status, progress});
 
                 if (status === Status.PROCESSING) {
-                    setTimeout(() => this.subscribe(id), TIMEOUT_FOR_GET_PROGRESS_TASK);
+                    const timeoutId = setTimeout(() => this.subscribe(id), TIMEOUT_FOR_GET_PROGRESS_TASK);
+                    this.subscribeIdsMap.set(id, timeoutId);
                 }
             });
+    };
+
+    cancelSubscribe = (id: string) => {
+        clearTimeout(this.subscribeIdsMap.get(id));
+        this.subscribeIdsMap.set(id, null);
+        this.updateTask(id, {isSubscribed: false});
     };
 
     @action

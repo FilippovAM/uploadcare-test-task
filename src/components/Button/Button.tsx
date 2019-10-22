@@ -4,6 +4,7 @@ import classNames from 'classnames';
 export enum ButtonType {
     PRIMARY = 'primary',
     DANGER = 'danger',
+    WARNING = 'warning',
 }
 
 interface ButtonProps {
