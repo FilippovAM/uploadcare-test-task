@@ -100,7 +100,6 @@ class TasksStore {
 
     cancelSubscribe = (id: string) => {
         clearTimeout(this.subscribeIdsMap.get(id));
-        this.subscribeIdsMap.set(id, null);
         this.updateTask(id, {isSubscribed: false});
     };
 
