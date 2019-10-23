@@ -81,13 +81,11 @@ export default class Main extends React.Component {
                                             {!isUpdating ? (
                                                 isSubscribed ? (
                                                     <Button type={ButtonType.WARNING}
-                                                            loading={isUpdating}
                                                             onClick={this.onClickCancelSubscribe(task.id)}>
                                                         Отменить подписку
                                                     </Button>
                                                 ) : (
                                                     <Button type={ButtonType.PRIMARY}
-                                                            loading={isUpdating}
                                                             onClick={this.onClickContinueSubscribe(task.id)}>
                                                         Продолжить подписку
                                                     </Button>
